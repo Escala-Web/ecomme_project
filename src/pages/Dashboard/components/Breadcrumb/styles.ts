@@ -5,7 +5,9 @@ export const Container = styled.div`
     width: 99%;
     height: 250px;
 
-    background-color: #f3f3f3;
+    background-image: linear-gradient(to bottom right, #333, rgb(26, 26, 254));
+
+
 
     border-radius: 8px;
 
@@ -14,6 +16,8 @@ export const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    margin-top: 4rem;
 
     .breadcrumb {
         color: #333;

@@ -3,7 +3,8 @@ import { RouteApp } from "./routes"
 import { GlobalStyles } from "./styles/GlobalStyles"
 import {colorPalettes} from "./styles/theme"
 import React, { useState } from "react";
-
+import { AuthProvider } from "./context/Auth";
+import { ToastContainer } from 'react-toastify';
 function App() {
   const [currentTheme, setCurrentTheme] = useState(colorPalettes[0]);
 
@@ -15,17 +16,20 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={currentTheme}>
-      <GlobalStyles />
-      <select onChange={handleChangeTheme}>
-        {colorPalettes.map((theme) => (
-          <option key={theme.name} value={theme.name}>
-            {theme.name}
-          </option>
-        ))}
-      </select>
-      <RouteApp />
-    </ThemeProvider>
+    <AuthProvider>
+        <ThemeProvider theme={currentTheme}>
+          <GlobalStyles />
+            <select onChange={handleChangeTheme}>
+              {colorPalettes.map((theme) => (
+                <option key={theme.name} value={theme.name}>
+                  {theme.name}
+                </option>
+              ))}
+            </select>
+            <ToastContainer />
+          <RouteApp />
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 

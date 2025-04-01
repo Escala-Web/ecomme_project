@@ -9,8 +9,9 @@ export const ContainerHeader = styled.div`
         gap: .3rem;
 
         p {
-            font-size: 20px;
-            font-weight: 500;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
         }
     }
 
@@ -26,7 +27,7 @@ export const ContainerHeader = styled.div`
     }
 
     .header {
-        background-color: aqua;
+        color: #333;
         width: 16rem;
         height: 100%;
         /* padding: 15px; */

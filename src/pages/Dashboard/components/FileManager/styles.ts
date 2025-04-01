@@ -82,6 +82,10 @@ export const Container = styled.div`
 
             padding: .8rem 0;
 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
             &:hover {
                 background-color: #f4f4f4;
             }
@@ -93,6 +97,8 @@ export const Container = styled.div`
         display: flex;
         align-items: center;
         gap: .6rem;
+
+        position: relative;
     }
 
     .info {
@@ -113,9 +119,36 @@ export const Container = styled.div`
         flex-direction: column;
         justify-content: space-between;
 
+        p {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            width: 80px;
+
+            text-align: center;
+        }
+
         svg {
             font-size: 4.8rem;
             background-color: transparent;
         }
+    }
+
+    .container_loading {
+        /* background-color: #bd9834; */
+        width: 100%;
+
+        position: absolute;
+        
+        left: 0;
+        top: 0;
+        width: 1180px;
+
+        height: 560px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 `;

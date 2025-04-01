@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const Formulario = styled.form`
 
     margin: 2rem 0;
+    background-color: transparent;
 
     .form_block {
         display: flex;

@@ -8,8 +8,13 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from "@mui/material";
+import { useFolder } from "../../../../../../hooks/FileManger/useFolder";
 
-export const FolderAdd = () => {
+interface FolderAddProps {
+    idFolder: number;
+  }
+
+export const FolderAdd: React.FC<FolderAddProps> = ({ idFolder }) => {
 
     const [open, setOpen] = useState(false);
 
@@ -20,6 +25,9 @@ export const FolderAdd = () => {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const { createFolder } = useFolder();
+
 
     return (
 
@@ -38,7 +46,10 @@ export const FolderAdd = () => {
                             const formData = new FormData(event.currentTarget);
                             const formJson = Object.fromEntries(formData.entries());
                             const email = formJson.email;
-                            console.log(email);
+                            createFolder.mutate({
+                                parent_id: idFolder,
+                                folder_name: String(email)
+                            })
                             handleClose();
                         },
                     },
@@ -56,7 +67,7 @@ export const FolderAdd = () => {
                         id="name"
                         name="email"
                         label="Nova pasta"
-                        type="email"
+                        type="text"
                         fullWidth
                         variant="standard"
                     />
