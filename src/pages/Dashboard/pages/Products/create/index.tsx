@@ -1,15 +1,28 @@
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { Breadcrumb } from "../../../components/Breadcrumb";
 import { FileManager } from "../../../components/FileManager";
 import { Title } from "../../../components/Title";
 import { Aside, Container, Formulario, MainContent } from "./styles";
-import { Badge, Button, Divider, IconButton } from "@mui/material";
+import {
+	Badge,
+	Button,
+	Checkbox,
+	Divider,
+	FormControl,
+	IconButton,
+	InputLabel,
+	MenuItem,
+	Select,
+	input,
+} from "@mui/material";
 import { ModalVariation } from "./Ui/Modal/Variation";
 import { useVariation } from "../../../../../hooks/Variation/useVariation";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useBread } from "../../../../../hooks/Bread/useBread";
 import { toast } from "react-toastify";
 import { useCategory } from "../../../../../hooks/Category/useCategory";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import { usePictures } from "../../../../../context/FileManager";
 
 // Tipos de dados
 interface Media {
@@ -25,7 +38,6 @@ interface Variation {
 	is_default: boolean;
 	discount: string;
 	value_variant: string | null;
-	pictures: Media[];
 }
 
 interface ProductFormData {
@@ -38,7 +50,20 @@ interface ProductFormData {
 
 export const ProductsCreate = () => {
 	const [idBread, setIdBread] = useState<number>(1); // Estado para o ID da marca selecionada
-	const [category, setCategory] = useState<string>("");
+	const { images } = usePictures();
+	const [idVariation, setIdVariation] = useState<number | null>(null);
+
+	console.log(images);
+	console.log(idVariation);
+
+	const imagesPi = images.map((img, index) => ({
+		id_media: img.picture.id,
+		position: "",
+		is_default: false,
+	}));
+	
+	console.log(imagesPi)
+
 	const [productData, setProductData] = useState<ProductFormData>({
 		id_category: 2,
 		name: "",
@@ -52,7 +77,7 @@ export const ProductsCreate = () => {
 				is_default: true,
 				discount: "",
 				value_variant: null,
-				pictures: [],
+				pictures: imagesPi,
 			},
 		],
 	});
@@ -65,20 +90,20 @@ export const ProductsCreate = () => {
 	};
 
 	const handleInputChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 		index?: number
 	) => {
 		const { name, value } = e.target;
-		if (index !== undefined) {
-			const updatedVariations = [...productData.variations];
-			updatedVariations[index][name as keyof Variation] = value;
-			setProductData((prevData) => ({
-				...prevData,
-				variations: updatedVariations,
-			}));
-		} else {
-			setProductData((prevData) => ({ ...prevData, [name]: value }));
-		}
+		setProductData((prevData) => {
+			if (index !== undefined) {
+				const updatedVariations = prevData.variations.map((variation, i) =>
+					i === index ? { ...variation, [name]: value } : variation
+				);
+				return { ...prevData, variations: updatedVariations };
+			} else {
+				return { ...prevData, [name]: value };
+			}
+		});
 	};
 
 	const handleAddVariation = () => {
@@ -93,7 +118,7 @@ export const ProductsCreate = () => {
 					is_default: false,
 					discount: "",
 					value_variant: null,
-					pictures: [],
+					pictures: imagesPi,
 				},
 			],
 		}));
@@ -110,13 +135,16 @@ export const ProductsCreate = () => {
 
 	function handleSubmit(event: React.FormEvent) {
 		event.preventDefault();
-		// Aqui, antes de enviar o formulário, asseguramos que id_brand está com o valor correto
 		setProductData((prevData) => ({
 			...prevData,
 			id_brand: idBread,
 		}));
 
-		console.log(productData); // Agora o id_brand está sendo enviado corretamente
+		if (images.length <= 0) {
+			return;
+		}
+
+		console.log(productData);
 	}
 
 	const { create, findAll: breadsAll, deleteBrands } = useBread();
@@ -145,7 +173,6 @@ export const ProductsCreate = () => {
 
 	const [isCategory, setIsCategory] = useState(false);
 	const [nameCategory, setNameCategory] = useState("");
-	const [descriptionCategory, setDescriptionCategory] = useState("");
 
 	const { createCategory } = useCategory();
 
@@ -166,11 +193,11 @@ export const ProductsCreate = () => {
 			<Formulario onSubmit={handleSubmit}>
 				<Container>
 					<div className="content">
-						<div className="container mt-2">
+						{/* <div className="container mt-2">
 							<Title title="Adicionar imagem" />
 							<FileManager />
-						</div>
-						<div className="container">
+						</div> */}
+						<div className="container mt-2">
 							<Title title="Informações do produto" />
 							<div className="form_flex mt-2">
 								<div className="form_group">
@@ -208,74 +235,100 @@ export const ProductsCreate = () => {
 						</div>
 
 						<div className="container">
-							{productData.variations.map((variation, index) => (
-								<div key={index} className="variation_group">
+							{productData.variations.slice(1).map((variation, index) => (
+								<div key={index + 1} className="variation_group">
 									<Title
 										title={
 											productData?.variations?.length > 0
 												? "Produtos"
-												: "Variação" + index + 1
+												: "Variação " + (index + 1) // Agora o index vai ser ajustado para o segundo item
 										}
 									/>
 									<h4 className="mt-1"></h4>
-									<div className="form_group">
-										<label htmlFor={`sku-${index}`}>SKU</label>
-										<input
-											type="text"
-											name="sku"
-											value={variation.sku}
-											onChange={(e) => handleInputChange(e, index)}
-										/>
+									<div className="form_flex">
+										<div className="form_group">
+											<InputLabel>SKU</InputLabel>
+											<input
+												type="text"
+												name="sku"
+												value={variation.sku}
+												onChange={(e) => handleInputChange(e, index + 1)} // Ajuste aqui também para manter o índice correto
+											/>
+										</div>
+										<div className="form_group">
+											<InputLabel>Preço</InputLabel>
+											<input
+												type="text"
+												name="price"
+												value={variation.price}
+												onChange={(e) => handleInputChange(e, index + 1)}
+											/>
+										</div>
+										<div className="form_group">
+											<InputLabel>Estoque</InputLabel>
+											<input
+												type="number"
+												name="stock"
+												value={variation.stock}
+												onChange={(e) => handleInputChange(e, index + 1)}
+											/>
+										</div>
+									</div>
+									<div className="form_flex">
+										<div className="form_group">
+											<InputLabel>Desconto</InputLabel>
+											<input
+												type="text"
+												name="discount"
+												value={variation.discount}
+												onChange={(e) => handleInputChange(e, index + 1)}
+											/>
+										</div>
+										<div className="form_group">
+											<InputLabel>Valor Variante</InputLabel>
+
+											<select
+												onChange={(event: FormEvent) =>
+													setIdVariation(event.target.value)
+												}
+											>
+												<option value="null">Não possui variação</option>
+												{findAllVariation?.data?.content?.map((item) => (
+													<option
+														key={item.id_variant_attribute}
+														value={item.id_variant_attribute}
+													>
+														{item.name}
+													</option>
+												))}
+											</select>
+										</div>
 									</div>
 									<div className="form_group">
-										<label htmlFor={`price-${index}`}>Preço</label>
-										<input
-											type="text"
-											name="price"
-											value={variation.price}
-											onChange={(e) => handleInputChange(e, index)}
+										<label>Adicionar imagens</label>
+										<FileManager
+											id={idVariation}
+											indexV={index + 1}
+											title="Adicionar imagem"
 										/>
 									</div>
-									<div className="form_group">
-										<label htmlFor={`stock-${index}`}>Estoque</label>
-										<input
-											type="number"
-											name="stock"
-											value={variation.stock}
-											onChange={(e) => handleInputChange(e, index)}
-										/>
-									</div>
-									<div className="form_group">
-										<label htmlFor={`discount-${index}`}>Desconto</label>
-										<input
-											type="text"
-											name="discount"
-											value={variation.discount}
-											onChange={(e) => handleInputChange(e, index)}
-										/>
-									</div>
-									<div className="form_group">
-										<label htmlFor={`value_variant-${index}`}>
-											Valor Variante
+
+									<div
+										className="form_flex"
+										style={{
+											display: "flex",
+											justifyContent: "start",
+											flexDirection: "row-reverse",
+										}}
+									>
+										<label htmlFor={`is_default-${index}`}>
+											Produto principal
 										</label>
-										<select name="" id="">
-											{findAllVariation?.data?.content?.map((item) => (
-												<option
-													key={item.id_variant_attribute}
-													value={item.id_variant_attribute}
-												>
-													{item.name}
-												</option>
-											))}
-										</select>
-									</div>
-									<div className="form_group">
-										<label htmlFor={`is_default-${index}`}>É Padrão</label>
-										<input
+										<Checkbox
 											type="checkbox"
 											name="is_default"
 											checked={variation.is_default}
-											onChange={(e) => handleInputChange(e, index)}
+											onChange={(e) => handleInputChange(e, index + 1)}
 										/>
 									</div>
 									<Divider />
@@ -358,71 +411,76 @@ export const ProductsCreate = () => {
 							</div>
 						</div>
 
-						{/* <div className="container">
-							<Title title="Categorias" />
-							<div className="form_group mt-1">
-								{breadsAll?.data?.content?.map((item) => (
-									<div key={item.id_brand} className="form_flex">
-										<div>
-											<input
-												type="radio"
-												id={item?.id_brand || "defaultId"}
-												name="id_brand"
-												value={item?.id_brand}
-												onChange={() => setIdBread(item?.id_brand)} // Atualiza idBread ao selecionar uma marca
-											/>
-											<label
-												htmlFor={item?.id_brand}
-												style={{ marginLeft: "4px" }}
+						<div>
+							<div className="container">
+								<Title title="Categorias" />
+								<div className="form_group mt-1">
+									{breadsAll?.data?.content?.map((item) => (
+										<div key={item.id_brand} className="form_flex">
+											<div>
+												<input
+													type="radio"
+													id={item?.id_brand || "defaultId"}
+													name="id_brand"
+													value={item?.id_brand}
+													onChange={() => setIdBread(item?.id_brand)} // Atualiza idBread ao selecionar uma marca
+												/>
+												<label
+													htmlFor={item?.id_brand}
+													style={{ marginLeft: "4px" }}
+												>
+													{item.name}
+												</label>
+											</div>
+											<IconButton
+												aria-label="delete"
+												onClick={() => handleDeleteBreand(item.id_brand)}
 											>
-												{item.name}
-											</label>
+												<Badge
+													sx={{ borderRadius: "50%", border: "none" }}
+													color="secondary"
+												>
+													<DeleteIcon sx={{ fontSize: "20px" }} />
+												</Badge>
+											</IconButton>
 										</div>
-										<IconButton
-											aria-label="delete"
-											onClick={() => handleDeleteBreand(item.id_brand)}
-										>
-											<Badge
-												sx={{ borderRadius: "50%", border: "none" }}
-												color="secondary"
-											>
-												<DeleteIcon sx={{ fontSize: "20px" }} />
-											</Badge>
-										</IconButton>
-									</div>
-								))}
+									))}
 
-								{isCategory && (
-									<div className="form_flex">
-										<div className="form_group">
-											<label htmlFor="">Nome da categoria</label>
-											<input
-												type="text"
-												placeholder="Nome da categoria"
-												value={nameCategory}
-												onChange={(event) =>
-													setNameCategory(event.target.value)
-												}
-											/>
+									{isCategory && (
+										<div className="form_flex">
+											<div className="form_group">
+												<label htmlFor="">Nome da categoria</label>
+												<input
+													type="text"
+													placeholder="Nome da categoria"
+													value={nameCategory}
+													onChange={(event) =>
+														setNameCategory(event.target.value)
+													}
+												/>
+											</div>
+											<div className="form_group">
+												<label htmlFor="" style={{ color: "#fff" }}>
+													s
+												</label>
+												<button
+													className="button"
+													onClick={handleCreateCategory}
+												>
+													Adicionar Categoria
+												</button>
+											</div>
 										</div>
-										<div className="form_group">
-											<label htmlFor="" style={{ color: "#fff" }}>
-												s
-											</label>
-											<button className="button" onClick={handleCreateCategory}>
-												Adicionar Categoria
-											</button>
-										</div>
-									</div>
-								)}
+									)}
 
-								<div className="form_group mt-2">
-									<Button onClick={toggleCategory}>
-										{isCategory ? "Cancelar" : "Adicionar Categoria"}
-									</Button>
+									<div className="form_group mt-2">
+										<Button onClick={toggleCategory}>
+											{isCategory ? "Cancelar" : "Adicionar Categoria"}
+										</Button>
+									</div>
 								</div>
 							</div>
-						</div> */}
+						</div>
 					</Aside>
 				</Container>
 				<Container>

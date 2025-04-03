@@ -1,6 +1,6 @@
 export interface IFoldersGet {
     parent_id: number,
-    is_thash: boolean
+    is_trash: boolean
 }
 
 export interface IFoldersContentResponse {
@@ -24,3 +24,13 @@ export interface IFolderResponse {
     folder_name: string
   }
 
+
+  export interface IFolderUpdate {
+    id_folder: number,
+    folder_name: string
+  }
+
+
+  export interface IFolderMoveTrash {
+    id_folder: number
+  }

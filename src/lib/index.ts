@@ -14,9 +14,9 @@ export const api = axios.create({
   baseURL: "http://192.168.15.9/api-php",
 });
 
-// Request Interceptor
+
 api.interceptors.request.use(
-  (config: CustomAxiosRequestConfig) => {
+  (config: CustomAxiosRequestConfig): any => {
     if (config.requiresAuth) {
       const storedAuth = localStorage.getItem("auth");
 

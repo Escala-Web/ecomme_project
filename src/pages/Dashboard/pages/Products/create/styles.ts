@@ -184,6 +184,12 @@ export const Formulario = styled.form`
 
 	background-color: transparent;
 
+
+
+	.variation_group {
+		position: relative;
+	}
+
 	.form_group {
 		margin-bottom: 1rem;
 
@@ -207,12 +213,16 @@ export const Formulario = styled.form`
 		}
 
 		input {
-			padding: 0.4rem 1rem;
+			padding: 0.8rem 1rem;
 			border: 1px solid #ccc;
 
 			border-radius: 4px;
 
 			outline: 0;
+
+			&:focus {
+				border: 2px solid #1976d2;
+			}
 		}
 
 		button {
@@ -232,12 +242,16 @@ export const Formulario = styled.form`
 		}
 
 		select {
-			padding: 0.4rem 1rem;
+			padding: 0.8rem 1rem;
 			border: 1px solid #ccc;
 
 			border-radius: 4px;
 
 			outline: 0;
+
+			&:focus {
+				border: 2px solid #1976d2;
+			}
 		}
 	}
 

@@ -26,16 +26,22 @@ export const Container = styled.div`
 
         width: 20%;
         display: flex;
+        flex-direction: row-reverse;
         justify-content: end;
+        gap: .2rem;
 
         padding-bottom: 1rem;
 
         span {
-            width: 40px;
-            height: 40px;
+            
+            padding: .2rem 1rem;
             /* background-color: aqua; */
 
             cursor: pointer;
+
+            color: #333;
+            font-weight: 600;
+            font-size: 12px;
             
             border-radius: 4px;
             border: 1px solid #ccc;
@@ -45,10 +51,11 @@ export const Container = styled.div`
             justify-content: center;
 
             svg {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
                 background-color: transparent;
 
-                color: #bd9834;
+                color: #333;
+                opacity: .9;
             }
         }
     }
@@ -61,6 +68,10 @@ export const Container = styled.div`
 
         padding-top: 1rem;
 
+        /* background-color: #bd9834; */
+
+        min-height: 66vh;
+
         /* height: 100%; */
     }
 
@@ -71,10 +82,12 @@ export const Container = styled.div`
         display: flex;
         flex-direction: column;
 
+        border-right: 1px #ccc solid;
+        height: 60vh;
         /* gap: .6rem; */
 
         p {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 400;
             color: #333;
 
@@ -96,6 +109,10 @@ export const Container = styled.div`
     .folder_list {
         display: flex;
         align-items: center;
+
+        width: 870px;
+
+        flex-wrap: wrap;
         gap: .6rem;
 
         position: relative;
@@ -118,6 +135,19 @@ export const Container = styled.div`
         align-items: center;
         flex-direction: column;
         justify-content: space-between;
+
+        overflow: hidden;
+
+        margin-top: 1rem;
+
+        img {
+            height: 100px;
+            width: 100%;
+            overflow: hidden;
+            object-fit: cover;
+
+            border-radius: 8px;
+        }
 
         p {
             overflow: hidden;
@@ -151,4 +181,89 @@ export const Container = styled.div`
         align-items: center;
         justify-content: center;
     }
+
+    .container_settings {
+        background-color: transparent;
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        /* justify-content: start; */
+        top: 0;
+        position: absolute;
+    }
+
+    .card {
+        position: relative;
+    }
+
+    .btn_setting {
+        background-color: transparent;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+
+        width: 100%;
+
+        font-weight: 800;
+        
+
+
+    }
+
+    .container_image_select {
+        width: 320px;
+
+        background-color: #f4f4f4;
+        height: 60vh;
+        border-radius: 6px;
+
+
+
+    }
+
+
+    .info_select  {
+        padding: .6rem;
+        text-align: center;
+        
+        display: flex;
+        flex-direction: column;
+
+        justify-content: space-between;
+
+        height: 100%;
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 0px;
+
+        background-color: #ed3237;
+
+        width: 25px;
+        height: 25px;
+
+        border-radius: 50%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        transition: .2s;
+
+        &:hover {
+            transform: scale(1.02);
+        } 
+
+        svg {
+            color: #fff;
+            font-weight: bold;
+        }
+    }
+
 `;
